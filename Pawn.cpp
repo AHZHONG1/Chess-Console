@@ -4,7 +4,7 @@
 
 Pawn::Pawn() : bMove(false) {}
 
-Pawn::Pawn(Pawn* piece) : GamePieces(piece), bMove(piece->bMove) {
+Pawn::Pawn(Pawn* piece, GameBoard* boardState) : GamePieces(piece, boardState), bMove(piece->bMove) {
 
 }
 

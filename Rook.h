@@ -11,7 +11,7 @@ public:
 
     Rook();
 
-    Rook(Rook*);
+    Rook(Rook*, GameBoard*);
 
     Rook(Color, GameBoard*);
 

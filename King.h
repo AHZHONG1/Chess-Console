@@ -12,7 +12,7 @@ public:
 
     King();
 
-    King(King*);
+    King(King*, GameBoard*);
 
     King(Color, GameBoard* board);
 

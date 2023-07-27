@@ -4,7 +4,7 @@
 
 Queen::Queen() {}
 
-Queen::Queen(Queen* piece) : GamePieces(piece) {
+Queen::Queen(Queen* piece, GameBoard* boardState) : GamePieces(piece, boardState) {
 
 }
 

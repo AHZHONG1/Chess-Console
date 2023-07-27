@@ -4,7 +4,7 @@
 
 Knight::Knight() {}
 
-Knight::Knight(Knight* piece) : GamePieces(piece) {
+Knight::Knight(Knight* piece, GameBoard* boardState) : GamePieces(piece, boardState) {
     
 }
 

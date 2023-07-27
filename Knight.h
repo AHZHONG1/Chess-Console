@@ -11,7 +11,7 @@ public:
 
     Knight();
 
-    Knight(Knight*);
+    Knight(Knight*, GameBoard*);
 
     Knight(Color, GameBoard*);
 

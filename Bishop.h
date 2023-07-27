@@ -11,7 +11,7 @@ public:
 
     Bishop();
 
-    Bishop(Bishop*);
+    Bishop(Bishop*, GameBoard*);
 
     Bishop(Color, GameBoard*);
 

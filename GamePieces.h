@@ -22,7 +22,7 @@ public:
 
     GamePieces();
 
-    GamePieces(GamePieces*);
+    GamePieces(GamePieces*, GameBoard*);
 
     GamePieces(Color, GameBoard*);
 

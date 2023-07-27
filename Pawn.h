@@ -11,7 +11,7 @@ public:
 
     Pawn();
 
-    Pawn(Pawn*);
+    Pawn(Pawn*, GameBoard*);
 
     Pawn(Color, GameBoard*);
 

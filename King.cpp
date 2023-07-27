@@ -4,7 +4,7 @@
 
 King::King() : bMove(false) {}
 
-King::King(King* piece) : GamePieces(piece), bMove(piece->bMove) {
+King::King(King* piece, GameBoard* boardState) : GamePieces(piece, boardState), bMove(piece->bMove) {
 
 }
 
@@ -53,5 +53,5 @@ bool King::checkOccupy(int start1, int start2, int end1, int end2) {
         }
         return false;
     }
-    return false;
+    return true;
 }

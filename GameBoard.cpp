@@ -43,23 +43,27 @@ GameBoard::GameBoard() : en_passant(-1) {
 GameBoard::GameBoard(GameBoard* board) : en_passant(board->en_passant) {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Pawn)) {
-                this->board[i][j] = new Pawn(dynamic_cast<Pawn*>(board->board[i][j]));
+            if (board->board[i][j] == nullptr) {
+                this->board[i][j] = nullptr;
+                continue;
             }
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Rook)) {
-                this->board[i][j] = new Rook(dynamic_cast<Rook*>(board->board[i][j]));
+            if (typeid(*board->board[i][j]) == typeid(Pawn)) {
+                this->board[i][j] = new Pawn(dynamic_cast<Pawn*>(board->board[i][j]), this);
             }
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Knight)) {
-                this->board[i][j] = new Knight(dynamic_cast<Knight*>(board->board[i][j]));
+            if (typeid(*board->board[i][j]) == typeid(Rook)) {
+                this->board[i][j] = new Rook(dynamic_cast<Rook*>(board->board[i][j]), this);
             }
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Bishop)) {
-                this->board[i][j] = new Bishop(dynamic_cast<Bishop*>(board->board[i][j]));
+            if (typeid(*board->board[i][j]) == typeid(Knight)) {
+                this->board[i][j] = new Knight(dynamic_cast<Knight*>(board->board[i][j]), this);
             }
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Queen)) {
-                this->board[i][j] = new Queen(dynamic_cast<Queen*>(board->board[i][j]));
+            if (typeid(*board->board[i][j]) == typeid(Bishop)) {
+                this->board[i][j] = new Bishop(dynamic_cast<Bishop*>(board->board[i][j]), this);
             }
-            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(King)) {
-                this->board[i][j] = new King(dynamic_cast<King*>(board->board[i][j]));
+            if (typeid(*board->board[i][j]) == typeid(Queen)) {
+                this->board[i][j] = new Queen(dynamic_cast<Queen*>(board->board[i][j]), this);
+            }
+            if (typeid(*board->board[i][j]) == typeid(King)) {
+                this->board[i][j] = new King(dynamic_cast<King*>(board->board[i][j]), this);
             }
         }
     }
@@ -115,7 +119,7 @@ bool GameBoard::move(string start, string end, Color turn) {
         return false;
     }
 
-    if (checkCheckAfterMove(start1, start2, end1, end2)) {
+    if (checkCheckAfterMove(start1, start2, end1, end2, turn)) {
         return false;
     }
 
@@ -152,7 +156,7 @@ void GameBoard::forceMove(int start1, int start2, int end1, int end2) {
         board[end1][end2] = board[start1][start2];
         board[start1][start2] = nullptr;
         if (end2 == 1) {
-            board[end1][3] = board[end1][0];
+            board[end1][2] = board[end1][0];
             board[end1][0] = nullptr;
         }
         if (end2 == 6) {
@@ -183,7 +187,12 @@ bool GameBoard::checkPawn(int i, int j) {
 
 bool GameBoard::checkRook(int i, int j) {
     if (board[i][j] == nullptr) return false;
-    return typeid(*board[i][j]) == typeid(Rook) && dynamic_cast<Rook*>(board[i][j])->getMove() == false;
+    return (typeid(*board[i][j]) == typeid(Rook) && dynamic_cast<Rook*>(board[i][j])->getMove() == false);
+}
+
+bool GameBoard::checkKing(int i, int j, Color turn) {
+    if (board[i][j] == nullptr) return false;
+    return (typeid(*board[i][j]) == typeid(King) && board[i][j]->getColor() == turn);
 }
 
 Color GameBoard::getSpecificColor(int i, int j) {
@@ -215,16 +224,33 @@ void GameBoard::checkDebug(string i, string j) {
     }
 }
 
-bool GameBoard::checkCheckAfterMove(int start1, int start2, int end1, int end2) {
+bool GameBoard::checkCheckAfterMove(int start1, int start2, int end1, int end2, Color turn) {
     GameBoard* newBoard = new GameBoard(this);
     newBoard->forceMove(start1, start2 , end1, end2);
-    for (int x = 0; x < 8; ++x) {
-        for (int y = 0; y < 8; ++y) {
-            if ((board[start1][start2]->moveValidate(start1, start2, x, y) && !(board[start1][start2]->checkOccupy(start1, start2, x, y)))) {
-                cout << "(" << x << ", " << y << ")" << endl;
+    newBoard->printBoard();
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (newBoard->board[i][j] != nullptr && newBoard->board[i][j]->getColor()!= turn) {
+                cout << i << ":" << j << endl;
+                for (int x = 0; x < 8; ++x) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (newBoard->board[i][j]->moveValidate(i, j, x, y)) {
+                            cout << "Case1:(" << x << ", " << y << ")" << endl;
+                        }
+                        if (!(newBoard->board[i][j]->checkOccupy(i, j, x, y))) {
+                            cout << "Case2:(" << x << ", " << y << ")" << endl;
+                        }
+                        if (newBoard->board[i][j]->moveValidate(i, j, x, y) && !(newBoard->board[i][j]->checkOccupy(i, j, x, y)) && newBoard->checkKing(x, y, turn)) {
+                            cout << i << ":" << j << ":" << x << ":" << y << endl;
+                            cout << "Being checked after move" << endl;
+                            delete newBoard;
+                            return true;
+                        }
+                    }
+                }
             }
         }
     }
-    
+    delete newBoard;
     return false;
 }

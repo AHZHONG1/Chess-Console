@@ -3,7 +3,7 @@
 
 Rook::Rook() : bMove(false) {}
 
-Rook::Rook(Rook* piece) : GamePieces(piece), bMove(piece->bMove) {
+Rook::Rook(Rook* piece, GameBoard* boardState) : GamePieces(piece, boardState), bMove(piece->bMove) {
     
 }
 

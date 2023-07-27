@@ -33,11 +33,13 @@ public:
 
     bool checkRook(int, int);
 
+    bool checkKing(int, int, Color);
+
     Color getSpecificColor(int, int);
 
     int getEn_passant();
 
     void checkDebug(string, string);
 
-    bool checkCheckAfterMove(int, int, int, int);
+    bool checkCheckAfterMove(int, int, int, int, Color);
 };

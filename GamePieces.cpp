@@ -5,7 +5,7 @@ GamePieces::GamePieces() {
 
 }
 
-GamePieces::GamePieces(GamePieces* piece) : color(piece->color), boardState(piece->boardState), name(piece->name) {
+GamePieces::GamePieces(GamePieces* piece, GameBoard* boardState) : color(piece->color), boardState(boardState), name(piece->name) {
 
 }
 
