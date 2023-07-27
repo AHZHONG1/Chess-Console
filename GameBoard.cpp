@@ -67,6 +67,10 @@ bool GameBoard::move(string start, string end, Color turn) {
     int end1 = '8' - end[1];
     int end2 = end[0] - 'A';
 
+    if (board[start1][start2] == nullptr) {
+        return false;
+    }
+
     if (board[start1][start2]->getColor() != turn) {
         cout << "You cannot move your opponent's piece" << endl;
         return false;
@@ -80,12 +84,20 @@ bool GameBoard::move(string start, string end, Color turn) {
         return false;
     }
 
-    if (board[end1][end2] == nullptr && typeid(*board[start1][start2]) == typeid(Pawn) && start2 != end2) {
+    if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Pawn)) {
+        dynamic_cast<Pawn*>(board[start1][start2])->setMove();
+    }
+
+    if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(King)) {
+        dynamic_cast<King*>(board[start1][start2])->setMove();
+    }
+
+    if (board[end1][end2] == nullptr && board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Pawn) && start2 != end2) {
         board[end1][end2] = board[start1][start2];
         board[start1][start2] = nullptr;
         delete board[start1][end2];
         board[start1][end2] = nullptr;
-    } else if (typeid(*board[start1][start2]) == typeid(King) && absolute(start2, end2) > 1) {
+    } else if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(King) && absolute(start2, end2) > 1) {
         board[end1][end2] = board[start1][start2];
         board[start1][start2] = nullptr;
         if (end2 == 1) {
@@ -105,14 +117,6 @@ bool GameBoard::move(string start, string end, Color turn) {
         board[start1][start2] = nullptr;
     }
 
-    if (typeid(*board[start1][start2]) == typeid(Pawn)) {
-        dynamic_cast<Pawn*>(board[start1][start2])->setMove();
-    }
-
-    if (typeid(*board[start1][start2]) == typeid(King)) {
-        dynamic_cast<King*>(board[start1][start2])->setMove();
-    }
-
     if (typeid(*board[end1][end2]) == typeid(Pawn) && absolute(start1, end1) == 2) {
         en_passant = start2;
     } else {
@@ -130,10 +134,12 @@ bool GameBoard::checkOccupy(int i, int j) {
 }
 
 bool GameBoard::checkPawn(int i, int j) {
+    if (board[i][j] == nullptr) return false;
     return typeid(*board[i][j]) == typeid(Pawn);
 }
 
 bool GameBoard::checkRook(int i, int j) {
+    if (board[i][j] == nullptr) return false;
     return typeid(*board[i][j]) == typeid(Rook);
 }
 

@@ -37,10 +37,7 @@ void Chess::start() {
             }
 
             turn = (turn == Color::White) ? Color::Black : Color::White;
-        }
-
-
-        
+        }     
     }
 }
 

@@ -1,5 +1,5 @@
 # use CPPFLAGS to set proper configurations in different platforms
-CPPFLAGS = -std=c++11
+CPPFLAGS = -std=c++11 -fsanitize=address,leak,undefined
 SRCS = main.cpp Chess.cpp GameBoard.cpp GamePieces.cpp Pawn.cpp Rook.cpp Knight.cpp Bishop.cpp Queen.cpp King.cpp GameUtilities.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
