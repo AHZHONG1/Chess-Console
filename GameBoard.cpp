@@ -84,6 +84,8 @@ bool GameBoard::move(string start, string end, Color turn) {
         return false;
     }
 
+    
+
     if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Pawn)) {
         dynamic_cast<Pawn*>(board[start1][start2])->setMove();
     }
