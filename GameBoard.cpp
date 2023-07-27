@@ -120,6 +120,7 @@ bool GameBoard::move(string start, string end, Color turn) {
     }
 
     if (checkCheckAfterMove(start1, start2, end1, end2, turn)) {
+        cout << "Being checked after move" << endl;
         return false;
     }
 
@@ -227,23 +228,22 @@ void GameBoard::checkDebug(string i, string j) {
 bool GameBoard::checkCheckAfterMove(int start1, int start2, int end1, int end2, Color turn) {
     GameBoard* newBoard = new GameBoard(this);
     newBoard->forceMove(start1, start2 , end1, end2);
-    newBoard->printBoard();
+    //newBoard->printBoard();
+    if (isCheck(newBoard, turn)) {
+        delete newBoard;
+        return true;
+    }
+    delete newBoard;
+    return false;
+}
+
+bool GameBoard::isCheck(GameBoard* newBoard, Color turn) {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
-            if (newBoard->board[i][j] != nullptr && newBoard->board[i][j]->getColor()!= turn) {
-                cout << i << ":" << j << endl;
+            if (newBoard->board[i][j] != nullptr && newBoard->board[i][j]->getColor() != turn) {
                 for (int x = 0; x < 8; ++x) {
                     for (int y = 0; y < 8; ++y) {
-                        if (newBoard->board[i][j]->moveValidate(i, j, x, y)) {
-                            cout << "Case1:(" << x << ", " << y << ")" << endl;
-                        }
-                        if (!(newBoard->board[i][j]->checkOccupy(i, j, x, y))) {
-                            cout << "Case2:(" << x << ", " << y << ")" << endl;
-                        }
                         if (newBoard->board[i][j]->moveValidate(i, j, x, y) && !(newBoard->board[i][j]->checkOccupy(i, j, x, y)) && newBoard->checkKing(x, y, turn)) {
-                            cout << i << ":" << j << ":" << x << ":" << y << endl;
-                            cout << "Being checked after move" << endl;
-                            delete newBoard;
                             return true;
                         }
                     }
@@ -251,6 +251,40 @@ bool GameBoard::checkCheckAfterMove(int start1, int start2, int end1, int end2, 
             }
         }
     }
-    delete newBoard;
+    return false;
+}
+
+bool GameBoard::possibleMove(Color turn) {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (board[i][j] != nullptr && board[i][j]->getColor() == turn) {
+                for (int x = 0; x < 8; ++x) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (board[i][j]->moveValidate(i, j, x, y) && !(board[i][j]->checkOccupy(i, j, x, y))) {
+                            if (!checkCheckAfterMove(i, j, x, y, turn)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool GameBoard::bCheckmate(Color turn) {
+    if (isCheck(this, turn)) {
+        if (!possibleMove(turn)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool GameBoard::bStalemate(Color turn) {
+    if (!possibleMove(turn)) {
+        return true;
+    }
     return false;
 }

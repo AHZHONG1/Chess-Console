@@ -42,4 +42,12 @@ public:
     void checkDebug(string, string);
 
     bool checkCheckAfterMove(int, int, int, int, Color);
+
+    bool isCheck(GameBoard*, Color);
+
+    bool possibleMove(Color);
+
+    bool bCheckmate(Color);
+
+    bool bStalemate(Color);
 };

@@ -22,5 +22,7 @@ public:
 
     void checkDebug();
 
+    bool checkEndGameCondition(Color);
+
 
 };

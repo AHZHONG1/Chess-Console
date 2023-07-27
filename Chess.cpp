@@ -13,6 +13,10 @@ Chess::~Chess() {
 void Chess::start() {
     while (!bEnd) {
         gameboard.printBoard();
+        if (checkEndGameCondition(turn)) {
+            bEnd = true;
+            break;
+        }
         cout << ((turn == Color::White) ? "White" : "Black") << "'s turn" << endl;
         string move;
         bool validation;
@@ -59,4 +63,17 @@ void Chess::checkDebug() {
 
         gameboard.checkDebug(position.substr(0, 1), position.substr(1, 1));
     }
+}
+
+bool Chess::checkEndGameCondition(Color turn) {
+    if (gameboard.bCheckmate(turn)) {
+        cout << "Checkmate" << endl;
+        return true;
+    }
+    
+    if (gameboard.bStalemate(turn)) {
+        cout << "Stalemate" << endl;
+        return true;
+    }
+    return false;
 }
