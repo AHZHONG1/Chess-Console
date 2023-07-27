@@ -6,23 +6,26 @@ using namespace std;
 
 class GamePieces;
 
-class GameBoard {
+class GameBoard
+{
 
 private:
-    
-    GamePieces* board[8][8];
+    GamePieces *board[8][8];
 
     int en_passant;
 
 public:
-
     GameBoard();
+
+    GameBoard(GameBoard*);
 
     ~GameBoard();
 
     void printBoard();
 
     bool move(string, string, Color);
+
+    void forceMove(int, int, int, int);
 
     bool checkOccupy(int, int);
 
@@ -36,4 +39,5 @@ public:
 
     void checkDebug(string, string);
 
+    bool checkCheckAfterMove(int, int, int, int);
 };

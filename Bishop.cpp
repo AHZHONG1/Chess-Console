@@ -4,6 +4,10 @@
 
 Bishop::Bishop() {}
 
+Bishop::Bishop(Bishop* piece) : GamePieces(piece) {
+
+}
+
 Bishop::Bishop(Color color, GameBoard* board) : GamePieces(color, board) {
     if (color == Color::White) {
         name = "W B";

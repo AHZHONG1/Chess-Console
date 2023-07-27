@@ -12,6 +12,8 @@ public:
 
     King();
 
+    King(King*);
+
     King(Color, GameBoard* board);
 
     ~King();

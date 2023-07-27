@@ -11,6 +11,8 @@ public:
 
     Pawn();
 
+    Pawn(Pawn*);
+
     Pawn(Color, GameBoard*);
 
     ~Pawn();

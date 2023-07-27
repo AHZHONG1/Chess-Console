@@ -40,8 +40,39 @@ GameBoard::GameBoard() : en_passant(-1) {
 
 }
 
-GameBoard::~GameBoard() {
+GameBoard::GameBoard(GameBoard* board) : en_passant(board->en_passant) {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Pawn)) {
+                this->board[i][j] = new Pawn(dynamic_cast<Pawn*>(board->board[i][j]));
+            }
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Rook)) {
+                this->board[i][j] = new Rook(dynamic_cast<Rook*>(board->board[i][j]));
+            }
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Knight)) {
+                this->board[i][j] = new Knight(dynamic_cast<Knight*>(board->board[i][j]));
+            }
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Bishop)) {
+                this->board[i][j] = new Bishop(dynamic_cast<Bishop*>(board->board[i][j]));
+            }
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(Queen)) {
+                this->board[i][j] = new Queen(dynamic_cast<Queen*>(board->board[i][j]));
+            }
+            if (board->board[i][j] != nullptr && typeid(*board->board[i][j]) == typeid(King)) {
+                this->board[i][j] = new King(dynamic_cast<King*>(board->board[i][j]));
+            }
+        }
+    }
+}
 
+GameBoard::~GameBoard() {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (board[i][j] != nullptr) {
+                delete board[i][j];
+            }
+        }
+    }
 }
 
 void GameBoard::printBoard() {
@@ -84,7 +115,13 @@ bool GameBoard::move(string start, string end, Color turn) {
         return false;
     }
 
-    
+    if (checkCheckAfterMove(start1, start2, end1, end2)) {
+        return false;
+    }
+
+    if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Rook)) {
+        dynamic_cast<Rook*>(board[start1][start2])->setMove();
+    }
 
     if (board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Pawn)) {
         dynamic_cast<Pawn*>(board[start1][start2])->setMove();
@@ -94,6 +131,18 @@ bool GameBoard::move(string start, string end, Color turn) {
         dynamic_cast<King*>(board[start1][start2])->setMove();
     }
 
+    forceMove(start1, start2, end1, end2);   
+
+    if (typeid(*board[end1][end2]) == typeid(Pawn) && absolute(start1, end1) == 2) {
+        en_passant = start2;
+    } else {
+        en_passant = -1;
+    }
+
+    return true;
+}
+
+void GameBoard::forceMove(int start1, int start2, int end1, int end2) {
     if (board[end1][end2] == nullptr && board[start1][start2] != nullptr && typeid(*board[start1][start2]) == typeid(Pawn) && start2 != end2) {
         board[end1][end2] = board[start1][start2];
         board[start1][start2] = nullptr;
@@ -118,14 +167,6 @@ bool GameBoard::move(string start, string end, Color turn) {
         board[end1][end2] = board[start1][start2];
         board[start1][start2] = nullptr;
     }
-
-    if (typeid(*board[end1][end2]) == typeid(Pawn) && absolute(start1, end1) == 2) {
-        en_passant = start2;
-    } else {
-        en_passant = -1;
-    }
-
-    return true;
 }
 
 bool GameBoard::checkOccupy(int i, int j) {
@@ -142,7 +183,7 @@ bool GameBoard::checkPawn(int i, int j) {
 
 bool GameBoard::checkRook(int i, int j) {
     if (board[i][j] == nullptr) return false;
-    return typeid(*board[i][j]) == typeid(Rook);
+    return typeid(*board[i][j]) == typeid(Rook) && dynamic_cast<Rook*>(board[i][j])->getMove() == false;
 }
 
 Color GameBoard::getSpecificColor(int i, int j) {
@@ -174,3 +215,16 @@ void GameBoard::checkDebug(string i, string j) {
     }
 }
 
+bool GameBoard::checkCheckAfterMove(int start1, int start2, int end1, int end2) {
+    GameBoard* newBoard = new GameBoard(this);
+    newBoard->forceMove(start1, start2 , end1, end2);
+    for (int x = 0; x < 8; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            if ((board[start1][start2]->moveValidate(start1, start2, x, y) && !(board[start1][start2]->checkOccupy(start1, start2, x, y)))) {
+                cout << "(" << x << ", " << y << ")" << endl;
+            }
+        }
+    }
+    
+    return false;
+}

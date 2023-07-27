@@ -1,9 +1,13 @@
 #include "Rook.h"
 #include "GameBoard.h"
 
-Rook::Rook() {}
+Rook::Rook() : bMove(false) {}
 
-Rook::Rook(Color color, GameBoard* board) : GamePieces(color, board) {
+Rook::Rook(Rook* piece) : GamePieces(piece), bMove(piece->bMove) {
+    
+}
+
+Rook::Rook(Color color, GameBoard* board) : GamePieces(color, board), bMove(false) {
     if (color == Color::White) {
         name = "W R";
     } else {
@@ -12,6 +16,14 @@ Rook::Rook(Color color, GameBoard* board) : GamePieces(color, board) {
 }
 
 Rook::~Rook() {}
+
+void Rook::setMove() {
+    bMove = true;
+}
+
+bool Rook::getMove() {
+    return bMove;
+}
 
 bool Rook::moveValidate(int start1, int start2, int end1, int end2) {
     if (start1 == end1 || start2 == end2) {

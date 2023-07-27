@@ -4,6 +4,10 @@
 
 Queen::Queen() {}
 
+Queen::Queen(Queen* piece) : GamePieces(piece) {
+
+}
+
 Queen::Queen(Color color, GameBoard* board) : GamePieces(color, board) {
     if (color == Color::White) {
         name = "W Q";

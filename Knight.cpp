@@ -4,6 +4,10 @@
 
 Knight::Knight() {}
 
+Knight::Knight(Knight* piece) : GamePieces(piece) {
+    
+}
+
 Knight::Knight(Color color, GameBoard* board) : GamePieces(color, board) {
     if (color == Color::White) {
         name = "W N";

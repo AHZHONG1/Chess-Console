@@ -4,6 +4,10 @@
 
 Pawn::Pawn() : bMove(false) {}
 
+Pawn::Pawn(Pawn* piece) : GamePieces(piece), bMove(piece->bMove) {
+
+}
+
 Pawn::Pawn(Color color, GameBoard* board) : GamePieces(color, board), bMove(false) {
     if (color == Color::White) {
         name = "W P";

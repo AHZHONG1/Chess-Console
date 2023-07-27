@@ -4,6 +4,10 @@
 
 King::King() : bMove(false) {}
 
+King::King(King* piece) : GamePieces(piece), bMove(piece->bMove) {
+
+}
+
 King::King(Color color, GameBoard* board) : GamePieces(color, board), bMove(false) {
     if (color == Color::White) {
         name = "W K";

@@ -22,9 +22,11 @@ public:
 
     GamePieces();
 
+    GamePieces(GamePieces*);
+
     GamePieces(Color, GameBoard*);
 
-    ~GamePieces();
+    virtual ~GamePieces();
 
     string getName();
 

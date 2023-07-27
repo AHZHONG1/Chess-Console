@@ -11,6 +11,8 @@ public:
 
     Queen();
 
+    Queen(Queen*);
+
     Queen(Color, GameBoard*);
 
     ~Queen();
